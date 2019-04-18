@@ -1,0 +1,18 @@
+{
+  "name": "flaschen_twit",
+  "version": "0.0.1",
+  "description": "thing to put stuff on the flashentashen from tweets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@mpmckenna8",
+  "license": "ISC",
+  "dependencies": {
+    "flaschenode": "0.0.6",
+    "get-pixels": "^3.3.2",
+    "jimp": "^0.6.1",
+    "sharp": "^0.22.0",
+    "twit": "^2.2.11"
+  }
+}
