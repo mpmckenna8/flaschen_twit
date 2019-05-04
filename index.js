@@ -2,8 +2,11 @@ let twit = require('twit')
 let sharp = require('sharp');
 let getPixels = require('get-pixels')
 var Jimp = require('jimp');
+const { exec } = require('child_process');
 
 
+// command to put text on the flaschentashen
+// ./send-text -f fonts/6x9.bdf -h "ft.noise" -l 10   "what the heck"
 let flash = require('flaschenode')
 
 flash.layer = 13;
@@ -27,10 +30,10 @@ Jimp.read('sfMountainBike.jpeg', (err, lenna) => {
     console.log('pixel color ,', pixi)
 });
 */
-
+let display_tweets = [];
 keys.timeout_ms =   60*1000
 var T = new twit(keys)
-let query_limit = 10;
+let query_limit = 1000;
 let img_links = [];
 let imglink = ""
 
@@ -40,15 +43,67 @@ T.get('search/tweets', {q: "noisebridge Filter:images", count: query_limit }, (e
     console.log('err searching tweets')
   }
   else {
-  console.log(data)
-  let tweetIndex = 0;
-  let tweet = data.statuses[tweetIndex].entities;
-    console.log('tweet , ', tweet)
 
+  console.log('data back', data)
+
+
+  let tweets = data.statuses;
+  let tweetIndex = 0;
+  let tweet = data.statuses[tweetIndex];
+
+//    console.log('tweet , ', tweet)
+    for( i of tweets ) {
+
+        let tweetInfo = {
+          id: 0,
+          user:{name:"", screen_name: ""},
+          entities:{media: []},
+          text: "",
+          img_link:""
+        }
+
+      console.log('tweet id', i.id)
+      console.log('user , ',i.user )
+
+      tweetInfo.id = i.id;
+      tweetInfo.user.name = i.user.name;
+      tweetInfo.text = i.text;
+      tweetInfo.user.screen_name = i.user.screen_name;
+
+      if( i.entities.media ) {
+        console.log('entities for a displayable tweet, ', i.entities.media)
+
+        tweetInfo.entities.media = i.entities.media
+        tweetInfo.img_link = i.entities.media[0].media_url
+        console.log('pushing,' , tweetInfo)
+        display_tweets.push(tweetInfo);
+
+      }
+
+    //  console.log(i.text)
+    }
+
+
+
+  console.log('display tweets', display_tweets)
+
+/*
+  let tweetTexxt = tweetInfo.text;
+  let sendCommand = "./send-text -f 4x6.bdf -h \"ft.noise\" -l 10   \"" + tweetTexxt + " \" "
+  exec(sendCommand, (err, stdout, stderr) => {
+    if(err) {
+      console.log(err)
+    }
+    console.log('stdout is , ', stdout)
+  })
+
+*/
+
+/*
   while( ! tweet.media && tweetIndex < query_limit ) {
 
     tweetIndex = tweetIndex+1;
-    tweet = data.statuses[tweetIndex].entities;
+  //  tweet = data.statuses[tweetIndex];
   }
 
   console.log('media!!!', tweet.media)
@@ -58,10 +113,49 @@ T.get('search/tweets', {q: "noisebridge Filter:images", count: query_limit }, (e
   img_links.push(imglink)
 
   flashImage(imglink)
+*/
+
+let text_process = null;
+
+setInterval( () => {
+
+  let randIndex = Math.floor ( Math.random() * display_tweets.length )
+
+  tweetTexxt = "@" + display_tweets[ randIndex ].user.screen_name + ": " + display_tweets[ randIndex ].text;
+
+
+  sendCommand = "./send-text -f 4x6.bdf -o 999999 -c 011111 -g 45x35 -h \"ft.noise\" -l 15   \"" + tweetTexxt + " \" "
+
+  console.log('random index,' , randIndex)
+  console.log('should be displaying, ',  display_tweets[ randIndex])
+
+
+  flashImage( display_tweets[ randIndex].img_link );
+
+  if( text_process ) {
+    text_process.kill();
   }
+
+  text_process = exec(sendCommand, (err, stdout, stderr) => {
+    if(err) {
+      console.log(err)
+    }
+    console.log('stdout is , ', stdout)
+  })
+
+
+
+}, 15000)
+
+
+  }
+
 
 })
 
+
+
+/*
 var stream = T.stream('statuses/filter', {
   track: [ "noisebridge", "@noisebridge", "Noisebridge" ]})
 
@@ -83,10 +177,10 @@ setInterval( () => {
 
 }, 5000)
 
-
+*/
 
 function flashImage(img_uri) {
-
+  flash.layer = 13
 
 Jimp.read(img_uri, (err, img) => {
   if (err) throw err;
