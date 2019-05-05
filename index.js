@@ -31,7 +31,7 @@ Jimp.read('sfMountainBike.jpeg', (err, lenna) => {
 });
 */
 let display_tweets = [];
-keys.timeout_ms =   60*1000
+keys.timeout_ms =   70*1000
 var T = new twit(keys)
 let query_limit = 1000;
 let img_links = [];
@@ -87,33 +87,6 @@ T.get('search/tweets', {q: "noisebridge Filter:images", count: query_limit }, (e
 
   console.log('display tweets', display_tweets)
 
-/*
-  let tweetTexxt = tweetInfo.text;
-  let sendCommand = "./send-text -f 4x6.bdf -h \"ft.noise\" -l 10   \"" + tweetTexxt + " \" "
-  exec(sendCommand, (err, stdout, stderr) => {
-    if(err) {
-      console.log(err)
-    }
-    console.log('stdout is , ', stdout)
-  })
-
-*/
-
-/*
-  while( ! tweet.media && tweetIndex < query_limit ) {
-
-    tweetIndex = tweetIndex+1;
-  //  tweet = data.statuses[tweetIndex];
-  }
-
-  console.log('media!!!', tweet.media)
-
-  imglink = tweet.media[0].media_url;
-
-  img_links.push(imglink)
-
-  flashImage(imglink)
-*/
 
 let text_process = null;
 
@@ -145,7 +118,7 @@ setInterval( () => {
 
 
 
-}, 15000)
+}, keys.timeout_ms)
 
 
   }
