@@ -30,6 +30,13 @@ let text_process = null;
 
 let imglink = ''
 
+var fs = require('fs');
+// var wstream = fs.createWriteStream('tweets.txt', {flags:'a'});
+
+
+//wstream.end();
+
+
 var stream = T.stream('statuses/filter', {
   track: [ "noisebridge", "@noisebridge", "Noisebridge", 'dogs' ]})
 
@@ -40,9 +47,11 @@ stream.on('tweet', (tweet_stream) => {
 
   if(tweet_ent.media) {
 
+    //wstream.write(JSON.stringify( tweet_stream ) + "\n");
+
     console.log('there s media with this one')
     tweetInfo.img_link = tweet_ent.media[0].media_url
-    flashImage( tweetInfo.img_link );
+    //flashImage( tweetInfo.img_link );
 
     let tweetTexxt = "@" + tweet_stream.user.screen_name + ": " + tweet_stream.text;
 
@@ -53,12 +62,14 @@ stream.on('tweet', (tweet_stream) => {
       text_process.kill();
     }
 
-    text_process = exec(sendCommand, (err, stdout, stderr) => {
+  /*  text_process = exec(sendCommand, (err, stdout, stderr) =>
+  {
       if(err) {
         console.log(err)
       }
       console.log('stdout is , ', stdout)
     })
+    */
   }
 
 
