@@ -9,7 +9,7 @@ const { exec } = require('child_process');
 // ./send-text -f fonts/6x9.bdf -h "ft.noise" -l 10   "what the heck"
 let flash = require('flaschenode')
 
-flash.layer = 13;
+flash.layer = 12;
 flash.initBuffer();
 
 
@@ -31,13 +31,13 @@ Jimp.read('sfMountainBike.jpeg', (err, lenna) => {
 });
 */
 let display_tweets = [];
-keys.timeout_ms =   70*1000
+keys.timeout_ms =   12*1000
 var T = new twit(keys)
 let query_limit = 1000;
 let img_links = [];
 let imglink = ""
 
-T.get('search/tweets', {q: "noisebridge Filter:images", count: query_limit }, (err, data, res) => {
+T.get('search/tweets', {q: "makerfaire Filter:images", count: query_limit }, (err, data, res) => {
 
   if(err) {
     console.log('err searching tweets')
@@ -116,41 +116,12 @@ setInterval( () => {
     console.log('stdout is , ', stdout)
   })
 
-
-
 }, keys.timeout_ms)
-
-
   }
-
-
 })
 
 
 
-/*
-var stream = T.stream('statuses/filter', {
-  track: [ "noisebridge", "@noisebridge", "Noisebridge" ]})
-
-stream.on('tweet', (tweet_stream) => {
-  console.log('tweet stream tweet', tweet_stream.entities)
-  let tweet_ent = tweet_stream.entities;
-
-  if(tweet_ent.media) {
-    imglink = tweet_ent.media[0].media_url
-    flashImage(imglink)
-  }
-  //flashImage(imglink)
-
-})
-
-setInterval( () => {
-
-  flashImage( img_links[ Math.floor ( Math.random() * img_links.length) ] )
-
-}, 5000)
-
-*/
 
 function flashImage(img_uri) {
   flash.layer = 13
